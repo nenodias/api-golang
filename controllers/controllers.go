@@ -19,7 +19,6 @@ func Home(w http.ResponseWriter, r *http.Request) {
 func TodasPersonalidades(w http.ResponseWriter, r *http.Request) {
 	var p []models.Personalidade
 	database.DB.Find(&p)
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(p)
 }
 
@@ -29,7 +28,6 @@ func RetornaUmaPersonalidade(w http.ResponseWriter, r *http.Request) {
 	var p models.Personalidade
 	database.DB.First(&p, id)
 	if p.Id != 0 {
-		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(p)
 	} else {
 		w.WriteHeader(404)
