@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/nenodias/api-golang/controllers"
 	"github.com/nenodias/api-golang/middleware"
@@ -18,5 +19,12 @@ func HandleRequest() {
 	r.HandleFunc("/api/personalidades", controllers.CriaUmaNovaPersonalidade).Methods("Post")
 	r.HandleFunc("/api/personalidades/{id}", controllers.DeletaUmaPersonalidade).Methods("Delete")
 	r.HandleFunc("/api/personalidades/{id}", controllers.EditaPersonalidade).Methods("Put")
-	log.Fatal(http.ListenAndServe(":8000", r))
+
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
+
+	corsHandler := handlers.CORS(originsOk, headersOk, methodsOk)
+
+	log.Fatal(http.ListenAndServe(":8000", corsHandler(r)))
 }
